@@ -369,12 +369,13 @@ if dein#is_sourced('denite.nvim') "{{{
 	" Ripgrep command on grep source
 	call denite#custom#var('grep', {
 		\ 'command': ['rg'],
-		\ 'default_opts': ['--vimgrep', '--no-heading', '--smart-case'],
+		\ 'default_opts': ['-i', '--vimgrep', '--no-heading'],
 		\ 'recursive_opts': [],
 		\ 'pattern_opt': ['--regexp'],
 		\ 'separator': ['--'],
 		\ 'final_opts': [],
 		\ })
+  " 'default_opts': ['--vimgrep', '--no-heading', '--smart-case'],
 
   " Define alias
   call denite#custom#alias('source', 'file/rec/git', 'file/rec')
@@ -472,7 +473,7 @@ if dein#is_sourced('denite.nvim') "{{{
   nnoremap <silent> [denite]cf :<C-u>DeniteBufferDir file<CR>
   nnoremap <silent> [denite]cr :<C-u>DeniteBufferDir file/rec<CR>
   nnoremap <silent> [denite]gg :<C-u>Denite -buffer-name=search-buffer grep<CR>
-  nnoremap <silent> [denite]ig :<C-u>Denite -buffer-name=search-buffer -start-filter grep:::!<CR>
+  nnoremap <silent> [denite]ag :<C-u>Denite -buffer-name=search-buffer -start-filter grep::!:<CR>
   nnoremap <silent> [denite]pg :<C-u>Denite -buffer-name=search-buffer grep::-w<CR>
   nnoremap <silent> [denite]w  :<C-u>Denite -buffer-name=search-buffer `'grep:::' . expand('<cword>')`<CR>
   nnoremap <silent> [denite]pw :<C-u>Denite -buffer-name=search-buffer `'grep::-w:' . expand('<cword>')`<CR>
