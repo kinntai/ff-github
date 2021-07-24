@@ -85,6 +85,8 @@ if dein#load_state(s:base_dir)
   call dein#add('glidenote/memolist.vim')
   call dein#add('kinntai/denite-bookmark')
   call dein#add('w1mvy/vim-denite-tab')
+  call dein#add('vim-denops/denops.vim')
+  call dein#add('vim-denops/denops-helloworld.vim')
 
 	call dein#config(['vim-markdown'], {
 	\ 'lazy' : 1, 'on_ft' : 'markdown',
