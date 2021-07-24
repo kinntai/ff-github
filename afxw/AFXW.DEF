@@ -3,7 +3,7 @@ CFG=ON
 
 [EXT_NORMAL]
 E_000=pvr
-N_000=""D:\projects\tools\win64\PVRTexToolGUI.exe" "$P\$F""
+N_000=""$~\tools\PVRTexToolGUI.exe" "$P\$F""
 
 [KEY_DEF]
 KEY_00="cmd.exe"
