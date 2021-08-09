@@ -47,6 +47,10 @@ if dein#load_state(s:base_dir)
 	call dein#add('Shougo/vimproc.vim')
   call dein#add('Shougo/vinarise.vim')
   call dein#add('Shougo/neco-vim')
+  " call dein#add('Shougo/ddc.vim')
+  call dein#add('Shougo/ddc-around')
+  call dein#add('Shougo/ddc-matcher_head')
+  call dein#add('Shougo/ddc-sorter_rank')
   " other
   call dein#add('hachy/eva01.vim')            " カラースキーム
   call dein#add('vim-scripts/DirDiff.vim')
@@ -522,6 +526,47 @@ if dein#is_sourced('deoplete.nvim') "{{{
   inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
   inoremap <expr><C-g> deoplete#undo_completion()       
 endif "}}}
+
+if dein#is_sourced('ddc.vim')
+	" Customize global settings
+
+	" Use around source.
+	" https://github.com/Shougo/ddc-around
+	call ddc#custom#patch_global('sources', ['around'])
+
+	" Use matcher_head and sorter_rank.
+	" https://github.com/Shougo/ddc-matcher_head
+	" https://github.com/Shougo/ddc-sorter_rank
+	call ddc#custom#patch_global('sourceOptions', {
+	      \ '_': {
+	      \   'matchers': ['matcher_head'],
+	      \   'sorters': ['sorter_rank']},
+	      \ })
+
+	" Change source options
+	call ddc#custom#patch_global('sourceOptions', {
+	      \ 'around': {'mark': 'A'},
+	      \ })
+	call ddc#custom#patch_global('sourceParams', {
+	      \ 'around': {'maxSize': 500},
+	      \ })
+
+	" Customize settings on a filetype
+	call ddc#custom#patch_filetype(
+	    \ '_', 'sources', ['around']
+	    \ )
+	call ddc#custom#patch_filetype(
+	    \ ['c', 'cpp'], 'sources', ['around', 'clangd']
+	    \ )
+	call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
+	    \ 'clangd': {'mark': 'C'},
+	    \ })
+	call ddc#custom#patch_filetype('markdown', 'sourceParams', {
+	    \ 'around': {'maxSize': 100},
+	    \ })
+
+	call ddc#enable()
+endif
 
 if dein#is_sourced('vim-gitgutter') "{{{
   if has('win32') || has('win64')
