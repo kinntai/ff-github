@@ -40,17 +40,25 @@ if dein#load_state(s:base_dir)
   call dein#add('roxma/vim-hug-neovim-rpc')
   call dein#add('Shougo/defx.nvim')
   call dein#add('Shougo/denite.nvim')
-  call dein#add('Shougo/deoplete.nvim')
+  " call dein#add('Shougo/deoplete.nvim')
   call dein#add('Shougo/neomru.vim')
   call dein#add('Shougo/neoyank.vim')
   call dein#add('Shougo/neoinclude.vim')      " 重いから有効にしてない
 	call dein#add('Shougo/vimproc.vim')
   call dein#add('Shougo/vinarise.vim')
   call dein#add('Shougo/neco-vim')
-  " call dein#add('Shougo/ddc.vim')
+  call dein#add('Shougo/ddc.vim')
   call dein#add('Shougo/ddc-around')
   call dein#add('Shougo/ddc-matcher_head')
+  call dein#add('Shougo/ddc-matcher_length')
   call dein#add('Shougo/ddc-sorter_rank')
+  " call dein#add('Shougo/ddc-nextword')
+  call dein#add('matsui54/ddc-matcher_fuzzy')
+  " call dein#add('matsui54/ddc-dictionary')
+  call dein#add('matsui54/ddc-buffer')
+  call dein#add('matsui54/ddc-filter_editdistance')
+  " call dein#add('matsui54/ddc-ultisnips')
+  call dein#add('Shougo/deoppet.nvim')
   " other
   call dein#add('hachy/eva01.vim')            " カラースキーム
   call dein#add('vim-scripts/DirDiff.vim')
@@ -504,8 +512,6 @@ if dein#is_sourced('deoplete.nvim') "{{{
 	let g:deoplete#enable_at_startup = 1
 	" Use smartcase.
 	call deoplete#custom#option('smart_case', v:true)
-  " call deoplete#custom#option('sources', {'_': ['around', 'buffer', 'file', 'member', 'file/include']})
-  " call deoplete#custom#option('sources', {'_': ['around', 'buffer', 'file', 'member', 'include', 'lsp']})
   call deoplete#custom#option('sources', {'_': ['around', 'buffer', 'file', 'member', 'include']})
   call deoplete#custom#var('around', {
         \   'mark_above': '[↑]',
@@ -528,42 +534,33 @@ if dein#is_sourced('deoplete.nvim') "{{{
 endif "}}}
 
 if dein#is_sourced('ddc.vim')
-	" Customize global settings
-
-	" Use around source.
-	" https://github.com/Shougo/ddc-around
-	call ddc#custom#patch_global('sources', ['around'])
-
-	" Use matcher_head and sorter_rank.
-	" https://github.com/Shougo/ddc-matcher_head
-	" https://github.com/Shougo/ddc-sorter_rank
+	call ddc#custom#patch_global('sources', ['around', 'buffer'])
 	call ddc#custom#patch_global('sourceOptions', {
 	      \ '_': {
-	      \   'matchers': ['matcher_head'],
+	      \   'matchers': ['matcher_head', 'matcher_length'],
 	      \   'sorters': ['sorter_rank']},
-	      \ })
-
-	" Change source options
-	call ddc#custom#patch_global('sourceOptions', {
-	      \ 'around': {'mark': 'A'},
-	      \ })
+        \ 'around': {'mark': 'A'},
+        \ 'buffer': {'mark': 'B'}
+        \ })
 	call ddc#custom#patch_global('sourceParams', {
 	      \ 'around': {'maxSize': 500},
+        \ 'buffer': {'requireSameFiletype': v:false},
 	      \ })
+	" call ddc#custom#patch_global('filterParams', {
+  "       \ 'matcher_fuzzy': {'camelcase': v:true},
+	"       \ })
+	call ddc#custom#patch_filetype(
+	    \ '_', 'sources', ['around', 'buffer']
+	    \ )
 
-	" Customize settings on a filetype
-	call ddc#custom#patch_filetype(
-	    \ '_', 'sources', ['around']
-	    \ )
-	call ddc#custom#patch_filetype(
-	    \ ['c', 'cpp'], 'sources', ['around', 'clangd']
-	    \ )
-	call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
-	    \ 'clangd': {'mark': 'C'},
-	    \ })
-	call ddc#custom#patch_filetype('markdown', 'sourceParams', {
-	    \ 'around': {'maxSize': 100},
-	    \ })
+	" <TAB>: completion.
+	inoremap <silent><expr> <TAB>
+	\ pumvisible() ? "\<C-n>" :
+	\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+	\ "\<TAB>" : ddc#manual_complete()
+
+	" <S-TAB>: completion back.
+	inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
 	call ddc#enable()
 endif
